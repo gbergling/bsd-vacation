@@ -1,0 +1,28 @@
+CC?=clang
+BIN=vacation
+PREFIX?=/usr/local
+MANDIR?=$(DESTDIR)$(PREFIX)/man
+
+OBJECTS=vacation.o
+
+CFLAGS+=-Wall
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+	MANDIR=$(DESTDIR)$(PREFIX)/share/man
+endif
+
+all: $(OBJECTS)
+	$(CC) -o $(BIN) $(OBJECTS)
+
+vacation.o: vacation.c
+
+install: $(BIN)
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp $(BIN) $(DESTDIR)$(PREFIX)/bin/
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/$(BIN)
+	mkdir -p $(MANDIR)/man1
+	cp vacation.1 $(MANDIR)/man1/
+
+clean:
+	rm -f $(BIN) $(OBJECTS)
